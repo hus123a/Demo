@@ -2,6 +2,8 @@ package com.catcoder.demo.bean;
 
 
 import lombok.Data;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Bean;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +15,7 @@ import java.util.Map;
  */
 @Data
 public class MyLinkTreeNode {
-    private String Name;
+    private String name;
     private Integer id;
     private int value;
     private Integer pid;
@@ -32,19 +34,8 @@ public class MyLinkTreeNode {
         this.value = value;
     }
 
-    public MyLinkTreeNode(String name, int value) {
-        Name = name;
-        this.value = value;
-    }
-
-    public MyLinkTreeNode(String name, Integer id, int value) {
-        Name = name;
-        this.id = id;
-        this.value = value;
-    }
-
     public MyLinkTreeNode(String name, Integer id, int value, Integer pid) {
-        Name = name;
+        this.name = name;
         this.id = id;
         this.value = value;
         this.pid = pid;
