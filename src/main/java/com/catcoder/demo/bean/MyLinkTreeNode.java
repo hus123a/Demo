@@ -1,6 +1,8 @@
 package com.catcoder.demo.bean;
 
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +18,9 @@ import java.util.Map;
 @Data
 public class MyLinkTreeNode {
     private String name;
+    @TableId(type= IdType.AUTO)
     private Integer id;
-    private int value;
+    private String value;
     private Integer pid;
     private List<MyLinkTreeNode> childNodes = Collections.EMPTY_LIST;
 
@@ -30,11 +33,11 @@ public class MyLinkTreeNode {
     public MyLinkTreeNode() {
     }
 
-    public MyLinkTreeNode(int value) {
+    public MyLinkTreeNode(String value) {
         this.value = value;
     }
 
-    public MyLinkTreeNode(String name, Integer id, int value, Integer pid) {
+    public MyLinkTreeNode(String name, Integer id, String value, Integer pid) {
         this.name = name;
         this.id = id;
         this.value = value;
@@ -49,8 +52,8 @@ public class MyLinkTreeNode {
         return this.parentNode != null;
     }
 
-    public static Map<String, Integer> getAllTreeValue(MyLinkTreeNode treeNode){
-        Map<String, Integer> treeValueMap = new HashMap();
+    public static Map<String, String> getAllTreeValue(MyLinkTreeNode treeNode){
+        Map<String, String> treeValueMap = new HashMap();
         List<MyLinkTreeNode> allTreeNode = getAllTreeNode(treeNode);
 
         for (MyLinkTreeNode each : allTreeNode) {
