@@ -2,9 +2,6 @@ package com.catcoder.demo;
 
 
 
-import com.alibaba.nacos.api.annotation.NacosProperties;
-import com.alibaba.nacos.api.config.annotation.NacosConfigurationProperties;
-import com.alibaba.nacos.api.config.annotation.NacosProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
