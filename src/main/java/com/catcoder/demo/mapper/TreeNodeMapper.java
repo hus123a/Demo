@@ -15,6 +15,6 @@ import java.util.List;
 public interface TreeNodeMapper extends BaseMapper<TreeNodeMapper> {
     public List<MyLinkTreeNode> selectAll();
 
-    @Insert("insert into tree (id, name, value, pid) values (#{id}, #{name},#{value}, #{pid})")
-    public void addTree(MyLinkTreeNode node);
+    @Insert("insert into tree (id, name, value, pid, level) values (#{id}, #{name},#{value}, #{pid}, #{level})")
+    public boolean addTree(MyLinkTreeNode node);
 }

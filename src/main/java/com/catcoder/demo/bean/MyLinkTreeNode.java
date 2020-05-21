@@ -22,6 +22,7 @@ public class MyLinkTreeNode {
     private Integer id;
     private String value;
     private Integer pid;
+    private Integer level;
     private List<MyLinkTreeNode> childNodes = Collections.EMPTY_LIST;
 
     private MyLinkTreeNode preNode;
@@ -37,11 +38,12 @@ public class MyLinkTreeNode {
         this.value = value;
     }
 
-    public MyLinkTreeNode(String name, Integer id, String value, Integer pid) {
+    public MyLinkTreeNode(String name, Integer id, String value, Integer pid, Integer level) {
         this.name = name;
         this.id = id;
         this.value = value;
         this.pid = pid;
+        this.level = level;
     }
 
     public boolean hasChildNode(){
