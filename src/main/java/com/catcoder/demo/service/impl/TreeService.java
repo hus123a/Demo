@@ -3,20 +3,15 @@ package com.catcoder.demo.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.catcoder.demo.bean.MyLinkTreeNode;
 import com.catcoder.demo.mapper.TreeNodeMapper;
-import com.catcoder.demo.service.AddNewTreeThread;
 import com.catcoder.demo.service.ITreeService;
 import com.catcoder.demo.service.RollBack;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.omg.CORBA.SystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
+
 
 import java.util.List;
 import java.util.concurrent.*;

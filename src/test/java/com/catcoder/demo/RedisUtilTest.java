@@ -1,6 +1,6 @@
 package com.catcoder.demo;
 
-import com.alibaba.fastjson.JSONObject;
+
 import com.catcoder.demo.bean.MyLinkTreeNode;
 import com.catcoder.demo.service.AddNewTreeThread;
 import com.catcoder.demo.service.ITreeService;
@@ -18,7 +18,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.*;
 
 @RunWith(SpringRunner.class)
@@ -78,12 +81,51 @@ public class RedisUtilTest {
     }
     @Test
     public void test4(){
-        MyLinkTreeNode temp = new MyLinkTreeNode();
+        /*MyLinkTreeNode temp = new MyLinkTreeNode();
         temp.setName("nodetest");
         temp.setPid(100001);
         temp.setValue("节点"+100001);
         temp.setLevel(1);
-        System.out.println(treeService.addTree(temp));
+        System.out.println(treeService.addTree(temp));*/
+        HashMap<Integer, Character> map = new HashMap<Integer, Character>();
+
+
+        /**
+         * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
+         * 使用 int 算法，这里 s[i] 是字符串的第 i 个字符，n 是字符串的长度，^ 表示求幂。空字符串的哈希值为 0。
+         */
+
+        String key = "hello";
+
+        char[] chars = key.toCharArray();
+
+//        for (char temp : chars) {
+//            map.put(key.indexOf(temp), temp);
+//
+//        }
+        for(int i = 0; i < chars.length; i++) {
+            map.put(i, chars[i]);
+        }
+
+
+        int hash = 0;
+        int hash2 = 0;
+        for (Map.Entry<Integer, Character> entry: map.entrySet()) {
+
+            System.out.println(entry.getKey() + "  " + entry.getValue() + " 幂的次数 ：" + (map.size() - entry.getKey() - 1));
+
+            hash += entry.getValue() == ' ' ? 0 : (int) (entry.getValue() * Math.pow(31, map.size() - entry.getKey() - 1));
+        }
+
+        hash2 = (int) ('h'*Math.pow(31,4) + 'e'*Math.pow(31,3) +'l'*Math.pow(31,2) + 'l'*Math.pow(31,1) +'o'*Math.pow(31,0));
+
+        System.out.println(key + "的hash值是："+ hash);
+        System.out.println(key + "的hash值是："+ hash2);
+        System.out.println(key + "的hash值是："+ key.hashCode());
+
+
+
+
     }
 
 
