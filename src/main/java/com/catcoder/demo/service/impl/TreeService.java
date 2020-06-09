@@ -96,7 +96,8 @@ public class TreeService implements ITreeService {
         queryWrapper.eq("id",node.getId());
 
         treeNodeMapper = ProxyFactory.getProxyInstance(treeNodeMapper, treeNodeMapper.getClass().getInterfaces()[0]);
-
+        System.out.println(treeNodeMapper.getClass().getInterfaces()[0].getClassLoader());
+        System.out.println(treeNodeMapper.getClass().getClassLoader());
         logger.info("走的数据库");
         return treeNodeMapper.selectOne(queryWrapper) ;
     }

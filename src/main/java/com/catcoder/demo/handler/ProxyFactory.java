@@ -23,10 +23,11 @@ public class ProxyFactory {
 
     private static Map<Class, Object> proxyContent = new ConcurrentHashMap<>();
 
-    public static  <T> T getProxyInstance(T target,Class<T> clazz){
+    public static  <T> T getProxyInstance(T target,Class clazz){
         if(!proxyContent.containsKey(clazz)){
            synchronized (ProxyFactory.class){
                if(!proxyContent.containsKey(clazz)){
+                   System.out.println("初始化proxy");
                    proxyContent.put(clazz,
                            Proxy.newProxyInstance(
                                    clazz.getClassLoader(),
@@ -34,7 +35,10 @@ public class ProxyFactory {
                                    new MapperHandler<T>(target)));
                }
            }
+        }else {
+            System.out.println("获取已经存在的proxy");
         }
+
         return (T) proxyContent.get(clazz);
     }
 
