@@ -14,17 +14,20 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author DELL
+ */
 @Component
 @DependsOn(value = {"redisTemplate"})
 @RefreshScope
 public class RedisUtil {
 
-    private Logger logger =  LoggerFactory.getLogger(RedisUtil.class);
+    private static Logger logger =  LoggerFactory.getLogger(RedisUtil.class);
     /**
      * 是否开启redis缓存  true开启   false关闭
      */
     @Value("${spring.redis.open: #{false}}")
-    private boolean open;
+    private static boolean open;
 
     public RedisUtil() {
         super();
@@ -32,17 +35,7 @@ public class RedisUtil {
     }
 
     @Autowired
-    private RedisTemplate redisTemplate;
-//    @Autowired
-//    private ValueOperations valueOperations;
-//    @Autowired
-//    private HashOperations hashOperations;
-//    @Autowired
-//    private ListOperations listOperations;
-//    @Autowired
-//    private SetOperations setOperations;
-//    @Autowired
-//    private ZSetOperations zSetOperations;
+    private static RedisTemplate redisTemplate;
 
     /**
      * 默认过期时长，单位：秒
@@ -56,7 +49,7 @@ public class RedisUtil {
     public final static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().disableHtmlEscaping()
             .create();
 
-    public boolean exists(String key) {
+    public static boolean exists(String key) {
         if (!open) {
             logger.info("redis已经关闭");
             return false;
@@ -65,7 +58,7 @@ public class RedisUtil {
         return redisTemplate.hasKey(key);
     }
 
-    public void set(String key, Object value, long expire) {
+    public  static void set(String key, Object value, long expire) {
         if (!open) {
             logger.info("redis已经关闭");
             return;
@@ -81,7 +74,7 @@ public class RedisUtil {
         }
     }
 
-    public void set(String key, Object value) {
+    public static void set(String key, Object value) {
         if (!open) {
             logger.info("redis已经关闭");
             return;
@@ -95,7 +88,7 @@ public class RedisUtil {
         }
     }
 
-    public <T> T get(String key, Class<T> clazz, long expire) {
+    public static <T> T get(String key, Class<T> clazz, long expire) {
         if (!open) {
             logger.info("redis已经关闭");
             return null;
@@ -108,7 +101,7 @@ public class RedisUtil {
         return value == null ? null : fromJson(value, clazz);
     }
 
-    public <T> T get(String key, Class<T> clazz) {
+    public static <T> T get(String key, Class<T> clazz) {
         if (!open) {
             logger.info("redis已经关闭");
             return null;
@@ -117,7 +110,7 @@ public class RedisUtil {
         return get(key, clazz, NOT_EXPIRE);
     }
 
-    public String get(String key, long expire) {
+    public static String get(String key, long expire) {
         if (!open) {
             logger.info("redis已经关闭");
             return null;
@@ -130,7 +123,7 @@ public class RedisUtil {
         return value;
     }
 
-    public String get(String key) {
+    public static String get(String key) {
         if (!open) {
             logger.info("redis已经关闭");
             return null;
@@ -139,7 +132,7 @@ public class RedisUtil {
         return get(key, NOT_EXPIRE);
     }
 
-    public void delete(String key) {
+    public static void delete(String key) {
         if (!open) {
             logger.info("redis已经关闭");
             return;
@@ -150,7 +143,7 @@ public class RedisUtil {
         }
     }
 
-    public void delete(String... keys) {
+    public static void delete(String... keys) {
         if (!open) {
             logger.info("redis已经关闭");
             return;
@@ -161,7 +154,7 @@ public class RedisUtil {
         }
     }
 
-    public void deletePattern(String pattern) {
+    public static void deletePattern(String pattern) {
         if (!open) {
             logger.info("redis已经关闭");
             return;
@@ -176,7 +169,7 @@ public class RedisUtil {
     /**
      * Object转成JSON数据
      */
-    private String toJson(Object object) {
+    private static String toJson(Object object) {
         if (!open) {
             logger.info("redis已经关闭");
             return null;
@@ -193,7 +186,7 @@ public class RedisUtil {
     /**
      * JSON数据，转成Object
      */
-    private <T> T fromJson(String json, Class<T> clazz) {
+    private static <T> T fromJson(String json, Class<T> clazz) {
         if (!open) {
             logger.info("redis已经关闭");
             return null;

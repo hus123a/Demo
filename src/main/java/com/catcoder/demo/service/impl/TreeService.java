@@ -1,7 +1,13 @@
 package com.catcoder.demo.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
+import com.catcoder.demo.annotation.redis.RedisCache;
 import com.catcoder.demo.bean.MyLinkTreeNode;
+import com.catcoder.demo.handler.MapperHandler;
+import com.catcoder.demo.handler.ProxyFactory;
 import com.catcoder.demo.mapper.TreeNodeMapper;
 import com.catcoder.demo.service.ITreeService;
 import com.catcoder.demo.service.RollBack;
@@ -13,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -80,5 +87,17 @@ public class TreeService implements ITreeService {
 
         logger.info("子线程 {} 执行完毕，线程退出", Thread.currentThread().getName());
         return returnDataList;
+    }
+
+    @Override
+    //@RedisCache
+    public MyLinkTreeNode selectOne(MyLinkTreeNode node) {
+        QueryWrapper<MyLinkTreeNode> queryWrapper = new QueryWrapper<MyLinkTreeNode>();
+        queryWrapper.eq("id",node.getId());
+
+        treeNodeMapper = ProxyFactory.getProxyInstance(treeNodeMapper, treeNodeMapper.getClass().getInterfaces()[0]);
+
+        logger.info("走的数据库");
+        return treeNodeMapper.selectOne(queryWrapper) ;
     }
 }

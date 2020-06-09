@@ -48,5 +48,11 @@ public class NacosController {
         return url;
     }
 
+    @RequestMapping(value = "/getforRemote", method = RequestMethod.POST)
+    @ResponseBody
+    public String getforRemote() {
+        return useLocalCache;
+    }
+
 }
 

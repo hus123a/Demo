@@ -1,5 +1,6 @@
 package com.catcoder.demo.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.catcoder.demo.bean.MyLinkTreeNode;
 import org.apache.ibatis.annotations.Insert;
@@ -12,9 +13,11 @@ import java.util.List;
  * @author DELL
  */
 @Mapper
-public interface TreeNodeMapper extends BaseMapper<TreeNodeMapper> {
+public interface TreeNodeMapper extends BaseMapper<MyLinkTreeNode> {
     public List<MyLinkTreeNode> selectAll();
 
     @Insert("insert into tree (id, name, value, pid, level) values (#{id}, #{name},#{value}, #{pid}, #{level})")
     public boolean addTree(MyLinkTreeNode node);
+
+
 }

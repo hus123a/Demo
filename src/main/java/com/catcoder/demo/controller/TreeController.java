@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -43,6 +44,14 @@ public class TreeController {
             logger.error(msg,e);
         }
         return msg;
+    }
+
+    @RequestMapping(value = "/getTreeById", method = RequestMethod.POST)
+    @ResponseBody
+    public MyLinkTreeNode getTreeById(@RequestParam(required = true) int id){
+        MyLinkTreeNode myLinkTreeNode = new MyLinkTreeNode();
+        myLinkTreeNode.setId(id);
+        return iTreeService.selectOne(myLinkTreeNode);
     }
 
 }

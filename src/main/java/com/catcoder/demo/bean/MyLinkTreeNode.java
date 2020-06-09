@@ -2,11 +2,14 @@ package com.catcoder.demo.bean;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -16,19 +19,23 @@ import java.util.Map;
  * @author DELL
  */
 @Data
-public class MyLinkTreeNode {
+@TableName(value = "tree")
+public class MyLinkTreeNode implements Serializable {
+
+    private static final long serialVersionUID = -4408208426062470224L;
     private String name;
     @TableId(type= IdType.AUTO)
     private Integer id;
     private String value;
     private Integer pid;
     private Integer level;
+    @TableField(exist = false)
     private List<MyLinkTreeNode> childNodes = Collections.EMPTY_LIST;
-
+    @TableField(exist = false)
     private MyLinkTreeNode preNode;
-
+    @TableField(exist = false)
     private MyLinkTreeNode nextNode;
-
+    @TableField(exist = false)
     private MyLinkTreeNode parentNode;
 
     public MyLinkTreeNode() {

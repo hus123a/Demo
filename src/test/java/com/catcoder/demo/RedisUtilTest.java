@@ -18,10 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 
 @RunWith(SpringRunner.class)
@@ -36,6 +33,7 @@ public class RedisUtilTest {
 
     @Autowired
     private ITreeService treeService;
+
 
     @Test
     public void testSet(){
@@ -127,19 +125,261 @@ public class RedisUtilTest {
 
 
     }
+    @Test
+    public void test5() throws Exception {
+//        int[] a = {2,-1,4,32,5,-9};
+//
+//        System.out.println(subarraysDivByK(a, 0));
+        //String s = "3[a]2[bc]"; //返回 "aaabcbc".
+        //String s = "3[a2[c]]", 返回 "accaccacc".
+        //String s = "2[abc]3[cd]ef", 返回 "abcabccdcdcdef".
+        //decodeString(s);
+
+//        int[] nums = {3,2,4};
+//        int target = 6;
+//
+//        printArray(twoSum1(nums, target));
+        //int x = 11001001;  //10010011  10010011
+//        int x = 2147483647; //-321
+//
+//
+//        System.out.println(reverse(x));
+        String s1 = "abc";
+        String s2 = "bad";
+        System.out.println(CheckPermutation(s1, s2));
+
+
+    }
+
+    public boolean CheckPermutation(String s1, String s2) {
+        if(s1.length() != s2.length() ){
+            return false;
+        }
+
+        int sum1 =0;
+        int sum2 = 0;
+
+        for(int i = 0; i< s1.length();i++  ){
+            sum1 += s1.charAt(i);
+            sum2 += s2.charAt(i);
+        }
+        System.out.println("sum1:"+sum1 +" sum2:"+ sum2);
+        return sum1 == sum2;
+    }
+
+    public int lengthOfLongestSubstring(String s) {
+        int ans = 0;
+        StringBuffer stringBuffer = new StringBuffer();
+        int max = 0;
+        char[] chars = s.toCharArray();
+        for (int i = 0 ; i < chars.length ; i++) {
+            if (stringBuffer.toString().contains(chars[i]+"")){
+                stringBuffer = new StringBuffer(chars[i-1]);
+                ans = ans > max? ans: max;
+                max = 1;
+            }
+            stringBuffer.append(chars[i]);
+            max++;
+        }
+        return ans > max? ans: max;
+    }
+
+
+    public int subarraysDivByK(int[] A, int K) {
+        int num = 0;
+        //排序
+        Arrays.sort(A);
+        if(A[0]>5){
+            return num;
+        }
+        printArray(A);
+        //换算
+        ArrayList<int[]> arrayList = new ArrayList<>();
+        int[] temp = {};
+        int m = A.length;
+        for (int j = 0 ; j <=m; j++) {
+            for(int l = 0; l <=m; l++){
+                temp = Arrays.copyOfRange(A,j,l);
+                arrayList.add(temp);
+                System.out.println("从"+j+"到"+ l);
+                printArray(temp);
+            }
+        }
+
+        num = arrayList.size();
+
+        return num;
+    }
+
+    private void printArray(int[] arr) {
+        System.out.print("[");
+        for (int i = 0; i < arr.length; i++) {
+            if(i == arr.length - 1) {
+                System.out.print(arr[i]);
+            }else{
+                System.out.print(arr[i]+",");
+            }
+        }
+        System.out.println("]");
+    }
+
+    public String decodeString(String s) {
+
+        int  f = 0;
+        int  e = 0;
+        /*int i = s.indexOf("[");
+        if((f = s.indexOf("[") )!= -1){
+            e = s.lastIndexOf("]");
+            System.out.println(s.charAt(f-1)+" "+ s.substring(f,e));
+
+        }
+        */
+
+        char[] chars = s.toCharArray();
+
+        /*for (int i = 0; i < chars.length; i++) {
+            if( 0 <= chars[i] && chars[i] <= 9) {
+
+            }
+        }*/
+
+
+        return "";
+    }
+
+    public int[] twoSum(int[] nums, int target) {
+        int[] ans = new int[2];
+        for (int i = 0; i < nums.length; i++) {
+           for (int j = i+1; j< nums.length; j++) {
+                if(nums[i] + nums[j] == target){
+                    ans[0] = i;
+                    ans[1] = j;
+                    return ans;
+                }
+           }
+        }
+        return ans;
+    }
+    public int[] twoSum1(int[] nums, int target) throws Exception {
+        int[] ans = new int[2];
+        HashMap<Integer, Integer> numMaps = new HashMap<>(nums.length);
+        for (int i = 0; i < nums.length; i++) {
+            if(numMaps.containsKey(target - nums[i])) {
+                ans[1] = i;
+                ans[0] = numMaps.get(target - nums[i]);
+                return ans;
+            }
+            numMaps.put(nums[i], i);
+        }
+        return ans;
+    }
+
+    public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
+        List<Boolean> booleanList = new ArrayList<>(candies.length);
+        //获取最大值
+        int max = 0;
+        for (int candy : candies) {
+            max = candy > max ? candy : max;
+        }
+        for (int candy : candies) {
+            booleanList.add(candy + extraCandies >= max);
+        }
+        return  booleanList;
+    }
+
+
+    public int reverse(int x) {
+        if(x == 0 || x == -2147483648) {
+            return 0;
+        }
+        String tag = x<0? "-":"";
+        if(x<0){
+            x = Integer.parseInt((x+"").substring(1));
+        }
+        LinkedList<Integer> numLink = new LinkedList<>();
+        while (x >0) {
+            numLink.addFirst(x % 10);
+            x = x/10;
+        }
+        StringBuffer node = new StringBuffer(tag);
+        int num = 0;
+        while (numLink.size()>0){
+            num = numLink.removeLast();
+            if(!(num ==0 && node.length() == 0)) {
+                node.append(num);
+            }
+        }
+        System.out.println(node);
+        return Double.parseDouble(node.toString())<Integer.MIN_VALUE
+                || Double.parseDouble(node.toString())>Integer.MAX_VALUE ?
+                 0 : Integer.parseInt(node.toString());
+    }
+
+    public boolean isPalindrome(int x) {
+        boolean ans = false;
+        int temp = 0;
+        int sum = 0;
+        while(x<0) {
+            temp = x % 10;
+        }
+        return ans;
+    }
+
+    public int sumNums(int n) {
+        boolean flag = n > 0 && (n += sumNums(n - 1)) > 0;
+        return n;
+    }
+
+    class ListNode {
+       int val;
+       ListNode next;
+       ListNode(int x) { val = x; }
+   }
+
+    class Solution {
+        public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+            ListNode ans = new ListNode(0);
+            int x = 0;
+            int valuel1 = 0;
+            int valuel2 = 0;
+            ListNode temp = null;
+            while(l1 != null || l2 != null){
+                ListNode e1 = l1;
+                ListNode e2 = l2;
+
+                valuel1 = l1 == null ? 0 : e1.val;
+                valuel2 = l2 == null ? 0 : e2.val;
+
+                if( temp == null) {
+                    temp = ans;
+                }
+                ListNode listNode = new ListNode((valuel1 + valuel2 + x) % 10);
+                temp.next = listNode;
+                temp = listNode;
+
+                x = (valuel1 + valuel2 + x)/10;
+                l1 = l1 == null? null : l1.next;
+                l2 = l2 == null? null : l2.next;
+            }
+
+            if(x>0) {
+                temp.next = new ListNode(x);
+            }
+            return ans.next;
+        }
+    }
+
+
 
 
     //@Test
     public void addNewTrees(List<MyLinkTreeNode> treeList) throws SystemException {
         logger.info("addNewCompanyUsers 新增参保人方法");
         logger.info(">>>>>>>>>>>>参数:{}", treeList);
-
-
         if (CollectionUtils.isEmpty(treeList)) {
             logger.info(">>>>>>入参为空。");
             return;
         }
-
 
         //每条线程最小处理任务数
         int perThreadHandleCount = 1;
@@ -231,6 +471,7 @@ public class RedisUtilTest {
         }
         logger.info("全部插入成功");
     }
+
 
 
 }
