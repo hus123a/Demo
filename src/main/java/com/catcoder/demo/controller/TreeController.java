@@ -2,6 +2,7 @@ package com.catcoder.demo.controller;
 
 import com.catcoder.demo.bean.MyLinkTreeNode;
 import com.catcoder.demo.service.ITreeService;
+import com.catcoder.demo.utils.RedisLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import redis.clients.jedis.JedisPool;
 
 import java.util.List;
 
@@ -26,6 +28,8 @@ public class TreeController {
     private static Logger logger =  LoggerFactory.getLogger(TreeController.class);
     @Autowired
     ITreeService iTreeService;
+    @Autowired
+    JedisPool jedisPool;
 
     @RequestMapping(value = "/getTree", method = RequestMethod.GET)
     @ResponseBody
@@ -54,5 +58,11 @@ public class TreeController {
         return iTreeService.selectOne(myLinkTreeNode);
     }
 
+
+    @RequestMapping(value = "/testRedisLock", method = RequestMethod.GET)
+    @ResponseBody
+    public void testRedisLock() throws InterruptedException {
+        RedisLock.testRedisLock(jedisPool);
+    }
 }
 

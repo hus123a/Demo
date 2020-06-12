@@ -5,6 +5,7 @@ import com.catcoder.demo.bean.MyLinkTreeNode;
 import com.catcoder.demo.service.AddNewTreeThread;
 import com.catcoder.demo.service.ITreeService;
 import com.catcoder.demo.service.RollBack;
+import com.catcoder.demo.utils.RedisLock;
 import com.catcoder.demo.utils.RedisUtil;
 import com.google.common.collect.Lists;
 import org.junit.Test;
@@ -33,6 +34,10 @@ public class RedisUtilTest {
 
     @Autowired
     private ITreeService treeService;
+
+
+
+
 
 
     @Test
