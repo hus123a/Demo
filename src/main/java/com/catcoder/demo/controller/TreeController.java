@@ -27,22 +27,22 @@ public class TreeController {
 
     private static Logger logger =  LoggerFactory.getLogger(TreeController.class);
     @Autowired
-    ITreeService iTreeService;
+    private ITreeService treeService;
     @Autowired
-    JedisPool jedisPool;
+    private JedisPool jedisPool;
 
     @RequestMapping(value = "/getTree", method = RequestMethod.GET)
     @ResponseBody
     public List<MyLinkTreeNode> getTree(){
 
-        return iTreeService.selectAll();
+        return treeService.selectAll();
     }
     @RequestMapping(value = "/addTree", method = RequestMethod.POST)
     @ResponseBody
     public String addTree(MyLinkTreeNode treeNode){
         String msg = "失败";
         try {
-            iTreeService.addTree(treeNode);
+            treeService.addTree(treeNode);
             msg = "成功";
         }catch (Exception e) {
             logger.error(msg,e);
@@ -55,7 +55,7 @@ public class TreeController {
     public MyLinkTreeNode getTreeById(@RequestParam(required = true) int id){
         MyLinkTreeNode myLinkTreeNode = new MyLinkTreeNode();
         myLinkTreeNode.setId(id);
-        return iTreeService.selectOne(myLinkTreeNode);
+        return treeService.selectOne(myLinkTreeNode);
     }
 
 

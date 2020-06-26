@@ -1,3 +1,4 @@
+/*
 package com.catcoder.demo.aspect.redis;
 
 import com.catcoder.demo.utils.RedisUtil;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+*/
 /**
  * @ProjectName: demo
  * @Package: com.catcoder.demo.aspect.redis
@@ -18,16 +20,19 @@ import org.springframework.stereotype.Component;
  * @Description: redis缓存注解切面
  * @Date: 2020/6/9 16:11
  * @Version: 1.0
- */
+ *//*
+
 @Component
 @Aspect
 public class RedisCacheAspect {
 
     private static Logger logger = LoggerFactory.getLogger(RedisCacheAspect.class);
 
-    /**
+    */
+/**
      * 切注解
-     */
+     *//*
+
     @Pointcut("@annotation(com.catcoder.demo.annotation.redis.RedisCache)")
     public void redisCache(){}
 
@@ -80,3 +85,4 @@ public class RedisCacheAspect {
         return obj;
     }
 }
+*/

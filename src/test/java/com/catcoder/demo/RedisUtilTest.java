@@ -1,3 +1,4 @@
+/*
 package com.catcoder.demo;
 
 
@@ -15,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
+
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
@@ -84,19 +85,23 @@ public class RedisUtilTest {
     }
     @Test
     public void test4(){
-        /*MyLinkTreeNode temp = new MyLinkTreeNode();
+        */
+/*MyLinkTreeNode temp = new MyLinkTreeNode();
         temp.setName("nodetest");
         temp.setPid(100001);
         temp.setValue("节点"+100001);
         temp.setLevel(1);
-        System.out.println(treeService.addTree(temp));*/
+        System.out.println(treeService.addTree(temp));*//*
+
         HashMap<Integer, Character> map = new HashMap<Integer, Character>();
 
 
-        /**
+        */
+/**
          * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
          * 使用 int 算法，这里 s[i] 是字符串的第 i 个字符，n 是字符串的长度，^ 表示求幂。空字符串的哈希值为 0。
-         */
+         *//*
+
 
         String key = "hello";
 
@@ -232,21 +237,25 @@ public class RedisUtilTest {
 
         int  f = 0;
         int  e = 0;
-        /*int i = s.indexOf("[");
+        */
+/*int i = s.indexOf("[");
         if((f = s.indexOf("[") )!= -1){
             e = s.lastIndexOf("]");
             System.out.println(s.charAt(f-1)+" "+ s.substring(f,e));
 
         }
-        */
+        *//*
+
 
         char[] chars = s.toCharArray();
 
-        /*for (int i = 0; i < chars.length; i++) {
+        */
+/*for (int i = 0; i < chars.length; i++) {
             if( 0 <= chars[i] && chars[i] <= 9) {
 
             }
-        }*/
+        }*//*
+
 
 
         return "";
@@ -420,7 +429,9 @@ public class RedisUtilTest {
             futures.add(future);
         }
 
-        /** 存放子线程返回结果. */
+        */
+/** 存放子线程返回结果. *//*
+
         List<Boolean> backUpResult = Lists.newArrayList();
         try {
             //等待所有子线程执行完毕
@@ -436,7 +447,9 @@ public class RedisUtilTest {
                     backUpResult.add(result);
                     logger.debug("子线程返回结果result: {}", result);
                     if (result) {
-                        /** 有线程执行异常，需要回滚子线程. */
+                        */
+/** 有线程执行异常，需要回滚子线程. *//*
+
                         rollBack.setRollBack(true);
                     }
                 }
@@ -451,7 +464,9 @@ public class RedisUtilTest {
             fixedThreadPool.shutdown();
         }
 
-        /** 检查子线程是否有异常，有异常整体回滚. */
+        */
+/** 检查子线程是否有异常，有异常整体回滚. *//*
+
         for (int i = 0; i < nThreads; i++) {
             if (!CollectionUtils.isEmpty(backUpResult)) {
                 Boolean result = backUpResult.get(i);
@@ -479,4 +494,4 @@ public class RedisUtilTest {
 
 
 
-}
+}*/

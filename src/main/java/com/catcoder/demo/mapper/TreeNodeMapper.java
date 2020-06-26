@@ -1,11 +1,10 @@
 package com.catcoder.demo.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.catcoder.demo.bean.MyLinkTreeNode;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
+
 
 import java.util.List;
 

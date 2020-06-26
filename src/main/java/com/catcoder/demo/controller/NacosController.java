@@ -2,6 +2,7 @@ package com.catcoder.demo.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,9 @@ public class NacosController {
     @Value("${spring.datasource.url:没有}")
     private String url;
 
+    @Autowired
+    private ServerTwoClient serverTwoClientImpl;
+
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     @ResponseBody
     public String get() {
@@ -52,6 +56,12 @@ public class NacosController {
     @ResponseBody
     public String getforRemote() {
         return useLocalCache;
+    }
+
+    @RequestMapping(value = "/testFegin", method = RequestMethod.GET)
+    @ResponseBody
+    public String testFegin() {
+        return serverTwoClientImpl.sayHello();
     }
 
 }

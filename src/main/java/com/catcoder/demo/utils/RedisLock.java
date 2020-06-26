@@ -26,8 +26,8 @@ public class RedisLock {
      * @param id
      * @return
      */
-    public static int tryLock(String id, JedisPool jedisPool){
-       return RedisUtil.setNxKey(id, jedisPool) ? 1 : -1;
+    public static boolean tryLock(String id, JedisPool jedisPool){
+       return RedisUtil.setNxKey(id, jedisPool);
     }
 
     /**
@@ -35,26 +35,27 @@ public class RedisLock {
      * @param id
      * @return
      */
-    public static int tryUnLock(String id, JedisPool jedisPool){
-        return RedisUtil.removeNxKey(id, jedisPool)? 1 : -1;
+    public static boolean tryUnLock(String id, JedisPool jedisPool){
+        return RedisUtil.removeNxKey(id, jedisPool);
     }
 
     public static void  testRedisLock(JedisPool jedisPool) throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        for (int i = 0; i< 10 ; i++) {
+        for (int i = 0; i< 300 ; i++) {
             new Thread(()->{
+                Long l = 0L;
                 String threadName = "ADD线程--"+Thread.currentThread().getName();
                 try {
                     countDownLatch.await();
                     try{
-                        logger.info(threadName+"开始获取锁");
-                        if(RedisLock.tryLock(threadName, jedisPool) >0){
+                         l = System.currentTimeMillis();
+                        if(RedisLock.tryLock(threadName, jedisPool)){
                             count ++;
                             logger.info(threadName+"累加成功！，当前count值为："+count);
-                            RedisLock.tryUnLock(threadName, jedisPool);
                         }
                     }finally {
-                        if(RedisLock.tryUnLock(threadName, jedisPool) > 0){
+                        if(RedisLock.tryUnLock(threadName, jedisPool)){
+                            logger.info(threadName+"获取释放锁耗时：" +(System.currentTimeMillis()-l));
                             logger.info(threadName+"释放锁成功！");
                         }
                     }

@@ -74,15 +74,15 @@ public class RedisConfig {
         log.info("JedisPool注入成功！！");
 
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxIdle(-1);
+        jedisPoolConfig.setMaxIdle(500);
         jedisPoolConfig.setMaxTotal(1000);
-        jedisPoolConfig.setMaxWaitMillis(100000);
+        jedisPoolConfig.setMaxWaitMillis(2000);
         jedisPoolConfig.setTestOnCreate(false);
 //        // 连接耗尽时是否阻塞, false报异常,ture阻塞直到超时, 默认true
         jedisPoolConfig.setBlockWhenExhausted(false);
         // 是否启用pool的jmx管理功能, 默认true
         jedisPoolConfig.setJmxEnabled(true);
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig, "39.99.166.88", 6379, 100000);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig, "localhost", 6379, 100000);
         return jedisPool;
     }
 }
