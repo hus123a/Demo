@@ -14,43 +14,11 @@
     <name>serverOne-client</name>
     <description></description>
 
-    <!-- TODO
-		<organization>
-		<name>company name</name>
-		<url>company url</url>
-		</organization>
-	-->
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
 
     <dependencies>
 
-        <!-- OPTIONAL
-			<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-extensions</artifactId>
-			<version>${wicket.version}</version>
-			</dependency>
-		-->
 
-        <!-- LOGGING DEPENDENCIES - LOG4J -->
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
-        </dependency>
 
         <!--  JUNIT DEPENDENCY FOR TESTING -->
         <dependency>
@@ -59,7 +27,18 @@
             <version>3.8.2</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.catCoder</groupId>
+            <artifactId>serverOne-process</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.catCoder</groupId>
+            <artifactId>serverTwo-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 
