@@ -2,6 +2,8 @@ package com.catCoder.controller;
 
 
 import com.catCoder.api.ServerTwoClient;
+import com.catCoder.bean.FormSeq;
+import com.catCoder.service.IFormSeqService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class NacosController {
     @Autowired
     private ServerTwoClient serverTwoClientImpl;
 
+    @Autowired
+    private IFormSeqService formSeqServiceImpl;
+
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     @ResponseBody
     public String get() {
@@ -65,6 +70,12 @@ public class NacosController {
     @ResponseBody
     public String testFegin() {
         return serverTwoClientImpl.sayHello();
+    }
+
+    @RequestMapping(value = "/getSeq", method = RequestMethod.GET)
+    @ResponseBody
+    public String getSeq() {
+        return formSeqServiceImpl.getId(new FormSeq("test"))+"";
     }
 
 }
