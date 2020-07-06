@@ -1,15 +1,17 @@
 package com.catCoder.config;
 
 
+import org.springframework.stereotype.Component;
+
 import java.lang.ref.WeakReference;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, java.io.Serializable {
+@Component
+public class IDArray<Integer>  extends AbstractQueue<Integer> implements BlockingQueue<Integer>, java.io.Serializable {
 
     /** The queued items */
     final Object[] items;
@@ -54,8 +56,8 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * Returns item at index i.
      */
     @SuppressWarnings("unchecked")
-    final E itemAt(int i) {
-        return (E) items[i];
+    final Integer itemAt(int i) {
+        return (Integer) items[i];
     }
 
     /**
@@ -74,7 +76,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * Inserts element at current put position, advances, and signals.
      * Call only when holding lock.
      */
-    private void enqueue(E x) {
+    private void enqueue(Integer x) {
         final Object[] items = this.items;
         items[putIndex] = x;
         if (++putIndex == items.length)
@@ -84,10 +86,10 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
     }
 
 
-    private E dequeue() {
+    private Integer dequeue() {
         final Object[] items = this.items;
         @SuppressWarnings("unchecked")
-        E x = (E) items[takeIndex];
+        Integer x = (Integer) items[takeIndex];
         items[takeIndex] = null;
         if (++takeIndex == items.length)
             takeIndex = 0;
@@ -187,7 +189,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      *         of its elements are null
      */
     public IDArray(int capacity, boolean fair,
-                              Collection<? extends E> c) {
+                              Collection<? extends Integer> c) {
         this(capacity, fair);
 
         final ReentrantLock lock = this.lock;
@@ -195,7 +197,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
         try {
             int i = 0;
             try {
-                for (E e : c) {
+                for (Integer e : c) {
                     checkNotNull(e);
                     items[i++] = e;
                 }
@@ -221,7 +223,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * @throws NullPointerException if the specified element is null
      */
     @Override
-    public boolean add(E e) {
+    public boolean add(Integer e) {
         return super.add(e);
     }
 
@@ -235,7 +237,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * @throws NullPointerException if the specified element is null
      */
     @Override
-    public boolean offer(E e) {
+    public boolean offer(Integer e) {
         checkNotNull(e);
         final ReentrantLock lock = this.lock;
         lock.lock();
@@ -259,13 +261,14 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public void put(E e) throws InterruptedException {
+    public void put(Integer e) throws InterruptedException {
         checkNotNull(e);
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
-            while (count == items.length)
+            while (count == items.length){
                 notFull.await();
+            }
             enqueue(e);
         } finally {
             lock.unlock();
@@ -281,7 +284,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * @throws NullPointerException {@inheritDoc}
      */
     @Override
-    public boolean offer(E e, long timeout, TimeUnit unit)
+    public boolean offer(Integer e, long timeout, TimeUnit unit)
             throws InterruptedException {
 
         checkNotNull(e);
@@ -301,7 +304,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
         }
     }
     @Override
-    public E poll() {
+    public Integer poll() {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -311,7 +314,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
         }
     }
     @Override
-    public E take() throws InterruptedException {
+    public Integer take() throws InterruptedException {
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
@@ -323,14 +326,15 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
         }
     }
     @Override
-    public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+    public Integer poll(long timeout, TimeUnit unit) throws InterruptedException {
         long nanos = unit.toNanos(timeout);
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
             while (count == 0) {
-                if (nanos <= 0)
+                if (nanos <= 0){
                     return null;
+                }
                 nanos = notEmpty.awaitNanos(nanos);
             }
             return dequeue();
@@ -339,7 +343,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
         }
     }
     @Override
-    public E peek() {
+    public Integer peek() {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -625,8 +629,8 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     @Override
-    public int drainTo(Collection<? super E> c) {
-        return drainTo(c, Integer.MAX_VALUE);
+    public int drainTo(Collection<? super Integer> c) {
+        return drainTo(c, java.lang.Integer.MAX_VALUE);
     }
 
     /**
@@ -636,7 +640,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     @Override
-    public int drainTo(Collection<? super E> c, int maxElements) {
+    public int drainTo(Collection<? super Integer> c, int maxElements) {
         checkNotNull(c);
         if (c == this)
             throw new IllegalArgumentException();
@@ -652,7 +656,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
             try {
                 while (i < n) {
                     @SuppressWarnings("unchecked")
-                    E x = (E) items[take];
+                    Integer x = (Integer) items[take];
                     c.add(x);
                     items[take] = null;
                     if (++take == items.length)
@@ -690,7 +694,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * @return an iterator over the elements in this queue in proper sequence
      */
     @Override
-    public Iterator<E> iterator() {
+    public Iterator<Integer> iterator() {
         return new Itr();
     }
 
@@ -949,18 +953,18 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * remove lastItem from the queue if it moved due to an interleaved
      * interior remove while in detached mode.
      */
-    private class Itr implements Iterator<E> {
+    private class Itr implements Iterator<Integer> {
         /** Index to look for new nextItem; NONE at end */
         private int cursor;
 
         /** Element to be returned by next call to next(); null if none */
-        private E nextItem;
+        private Integer nextItem;
 
         /** Index of nextItem; NONE if none, REMOVED if removed elsewhere */
         private int nextIndex;
 
         /** Last element returned; null if none or not detached. */
-        private E lastItem;
+        private Integer lastItem;
 
         /** Index of lastItem, NONE if none, REMOVED if removed elsewhere */
         private int lastRet;
@@ -1131,9 +1135,9 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
             }
         }
 
-        public E next() {
+        public Integer next() {
             // assert lock.getHoldCount() == 0;
-            final E x = nextItem;
+            final Integer x = nextItem;
             if (x == null)
                 throw new NoSuchElementException();
             final ReentrantLock lock = IDArray.this.lock;
@@ -1172,7 +1176,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
                     if (!isDetached())
                         removeAt(lastRet);
                     else {
-                        final E lastItem = this.lastItem;
+                        final Integer lastItem = this.lastItem;
                         // assert lastItem != null;
                         this.lastItem = null;
                         if (itemAt(lastRet) == lastItem)
@@ -1315,7 +1319,7 @@ public class IDArray<E>  extends AbstractQueue<E> implements BlockingQueue<E>, j
      * @return a {@code Spliterator} over the elements in this queue
      * @since 1.8
      */
-    public Spliterator<E> spliterator() {
+    public Spliterator<Integer> spliterator() {
         return Spliterators.spliterator
                 (this, Spliterator.ORDERED | Spliterator.NONNULL |
                         Spliterator.CONCURRENT);
