@@ -67,8 +67,8 @@ public class TreeController {
 
     @RequestMapping(value = "/testIDHandler", method = RequestMethod.GET)
     @ResponseBody
-    public void testIDHandler() throws InterruptedException {
-        treeService.testGetId();
+    public void testIDHandler(@RequestParam  String code){
+        treeService.testGetId(code);
     }
 }
 

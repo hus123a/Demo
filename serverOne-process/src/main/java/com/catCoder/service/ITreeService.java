@@ -16,5 +16,5 @@ public interface ITreeService {
 
     public MyLinkTreeNode selectOne(MyLinkTreeNode node);
 
-    void testGetId();
+    void testGetId(String code);
 }

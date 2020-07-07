@@ -9,6 +9,7 @@ import com.catCoder.mapper.TreeNodeMapper;
 import com.catCoder.service.ITreeService;
 import com.catCoder.service.RollBack;
 import com.catCoder.utils.IDHandler;
+import com.catCoder.utils.IDHandler2;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class TreeService implements ITreeService {
         return treeNodeMapper.addTree(node);
     }
     
-    private static final int THREAD_NUM = 8888;
+    private static final int THREAD_NUM = 4999;
 
 
 
@@ -53,6 +54,9 @@ public class TreeService implements ITreeService {
     
     @Autowired
     private IDHandler idHandler;
+
+    @Autowired
+    private IDHandler2 idHandler2;
             
 
     @Override
@@ -115,7 +119,7 @@ public class TreeService implements ITreeService {
     }
 
     @Override
-    public void testGetId() {
+    public void testGetId(String code) {
         try {
             ids.clear();
             startTime = System.currentTimeMillis();
@@ -125,7 +129,7 @@ public class TreeService implements ITreeService {
             CountDownLatch c = new CountDownLatch(THREAD_NUM);
 
             for (int i = 0; i < THREAD_NUM; i ++) {
-                new Thread(new Run(countDownLatch, idHandler, ids, c)).start();
+                new Thread(new Run(countDownLatch, idHandler2, ids, c, code)).start();
             }
             // 启动多个线程
             countDownLatch.countDown();
@@ -152,15 +156,18 @@ public class TreeService implements ITreeService {
 
         private CountDownLatch end;
 
-        private IDHandler idHandler;
+        private IDHandler2 idHandler;
 
         private ConcurrentLinkedDeque<Integer> ids;
 
-        public Run(CountDownLatch startLatch, IDHandler idHandler, ConcurrentLinkedDeque<Integer> ids, CountDownLatch end) {
+        private String code;
+
+        public Run(CountDownLatch startLatch, IDHandler2 idHandler, ConcurrentLinkedDeque<Integer> ids, CountDownLatch end, String code) {
             this.startLatch = startLatch;
             this.idHandler = idHandler;
             this.ids = ids;
             this.end =  end;
+            this.code = code;
         }
 
         @Override
@@ -168,9 +175,10 @@ public class TreeService implements ITreeService {
             try {
                 // 线程等待
                 startLatch.await();
-                int i = idHandler.get();
+                //int i = idHandler.get();
+                int i = idHandler.get(1000, code);
                 long endTime = System.currentTimeMillis();
-                //log.info("线程"+Thread.currentThread().getName()+"获取了id :"+ i+ ", cost: " + (endTime - System.currentTimeMillis()) + " ms.");ms
+                //log.info("线程"+Thread.currentThread().getName()+"获取了id :"+ i+ ", cost: " + (endTime - System.currentTimeMillis()) + " ms.");
                 if(ids.contains(i)){
                     log.info("存在获取重复的id:"+ i+",当前线程为"+ Thread.currentThread().getName());
                 }
