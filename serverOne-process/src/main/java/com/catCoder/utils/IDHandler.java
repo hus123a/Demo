@@ -43,13 +43,13 @@ public class IDHandler {
    };
 
    public int get() throws InterruptedException {
-       Integer id = null;
+       /*Integer id = null;
        lock.lockInterruptibly();
        try {
            id = this.idArray.poll(500, TimeUnit.MILLISECONDS);
        }finally {
            lock.unlock();
-       }
-       return id;
+       }*/
+       return this.idArray.poll(500, TimeUnit.MILLISECONDS);
    }
 }

@@ -117,6 +117,7 @@ public class TreeService implements ITreeService {
     @Override
     public void testGetId() {
         try {
+            ids.clear();
             startTime = System.currentTimeMillis();
             log.info("CountDownLatch started at: " + startTime);
             // 初始化计数器为1
@@ -137,7 +138,7 @@ public class TreeService implements ITreeService {
            if(ids.size() == THREAD_NUM){
                log.error("全部获取到了id");
            }else {
-               log.error("存在没有获取到id的线程");
+               log.error("ids大小为："+ ids.size()+"存在"+(THREAD_NUM-ids.size())+"个没有获取到id的线程");
            }
 
 
@@ -169,7 +170,7 @@ public class TreeService implements ITreeService {
                 startLatch.await();
                 int i = idHandler.get();
                 long endTime = System.currentTimeMillis();
-                log.info("线程"+Thread.currentThread().getName()+"获取了id :"+ i+ ", cost: " + (endTime - System.currentTimeMillis()) + " ms.");
+                //log.info("线程"+Thread.currentThread().getName()+"获取了id :"+ i+ ", cost: " + (endTime - System.currentTimeMillis()) + " ms.");ms
                 if(ids.contains(i)){
                     log.info("存在获取重复的id:"+ i+",当前线程为"+ Thread.currentThread().getName());
                 }
