@@ -67,7 +67,7 @@ public class IDHandler2 {
 
     public void addNode(String code) {
         log.info("线程"+Thread.currentThread().getName()+"触发了扩容");
-        Queue<Integer> idQuene = formSeqServiceImpl.getMultiIdQuene(new FormSeq("test"), 500);
+        Queue<Integer> idQuene = formSeqServiceImpl.getMultiIdQuene(new FormSeq(code), 500);
         ArrayBlockingQueue<Integer> codes = idMaps.get(code);
         idQuene.forEach(id->{
             try {
