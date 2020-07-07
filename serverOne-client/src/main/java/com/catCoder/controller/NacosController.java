@@ -78,5 +78,9 @@ public class NacosController {
         return formSeqServiceImpl.getId(new FormSeq("test"))+"";
     }
 
+    public void testGetId(){
+
+    }
+
 }
 

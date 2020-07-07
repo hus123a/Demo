@@ -8,21 +8,28 @@ import com.catCoder.handler.ProxyFactory;
 import com.catCoder.mapper.TreeNodeMapper;
 import com.catCoder.service.ITreeService;
 import com.catCoder.service.RollBack;
+import com.catCoder.utils.IDHandler;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CountDownLatch;
 
 @Service
+@Slf4j
 public class TreeService implements ITreeService {
 
     private  final Logger logger = LoggerFactory.getLogger(TreeService.class);
+
+    private ConcurrentLinkedDeque<Integer> ids = new ConcurrentLinkedDeque<>();
 
     @Autowired
     TreeNodeMapper treeNodeMapper;
@@ -37,7 +44,16 @@ public class TreeService implements ITreeService {
     public boolean addTree(MyLinkTreeNode node) {
         return treeNodeMapper.addTree(node);
     }
+    
+    private static final int THREAD_NUM = 8888;
 
+
+
+    private static long startTime = 0L;
+    
+    @Autowired
+    private IDHandler idHandler;
+            
 
     @Override
     @Transactional
@@ -96,5 +112,74 @@ public class TreeService implements ITreeService {
         System.out.println(treeNodeMapper.getClass().getClassLoader());
         logger.info("走的数据库");
         return treeNodeMapper.selectOne(queryWrapper) ;
+    }
+
+    @Override
+    public void testGetId() {
+        try {
+            startTime = System.currentTimeMillis();
+            log.info("CountDownLatch started at: " + startTime);
+            // 初始化计数器为1
+            CountDownLatch countDownLatch = new CountDownLatch(1);
+            CountDownLatch c = new CountDownLatch(THREAD_NUM);
+
+            for (int i = 0; i < THREAD_NUM; i ++) {
+                new Thread(new Run(countDownLatch, idHandler, ids, c)).start();
+            }
+            // 启动多个线程
+            countDownLatch.countDown();
+
+            //所有线程执行完成之后
+            c.await();
+
+            //如果ids.size() == THREAD_NUM 说明全部没问题
+
+           if(ids.size() == THREAD_NUM){
+               log.error("全部获取到了id");
+           }else {
+               log.error("存在没有获取到id的线程");
+           }
+
+
+        } catch (Exception e) {
+            log.error("Exception: " + e.getMessage(),e);
+        }
+    }
+
+    private static class Run implements Runnable {
+        private CountDownLatch startLatch;
+
+        private CountDownLatch end;
+
+        private IDHandler idHandler;
+
+        private ConcurrentLinkedDeque<Integer> ids;
+
+        public Run(CountDownLatch startLatch, IDHandler idHandler, ConcurrentLinkedDeque<Integer> ids, CountDownLatch end) {
+            this.startLatch = startLatch;
+            this.idHandler = idHandler;
+            this.ids = ids;
+            this.end =  end;
+        }
+
+        @Override
+        public void run() {
+            try {
+                // 线程等待
+                startLatch.await();
+                int i = idHandler.get();
+                long endTime = System.currentTimeMillis();
+                log.info("线程"+Thread.currentThread().getName()+"获取了id :"+ i+ ", cost: " + (endTime - System.currentTimeMillis()) + " ms.");
+                if(ids.contains(i)){
+                    log.info("存在获取重复的id:"+ i+",当前线程为"+ Thread.currentThread().getName());
+                }
+                ids.add(i);
+
+            } catch (Exception e) {
+                log.error(e.getMessage(),e);
+            }finally {
+                end.countDown();
+            }
+        }
     }
 }

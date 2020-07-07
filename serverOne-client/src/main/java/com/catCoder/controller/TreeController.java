@@ -64,5 +64,11 @@ public class TreeController {
     public void testRedisLock() throws InterruptedException {
         RedisLock.testRedisLock(jedisPool);
     }
+
+    @RequestMapping(value = "/testIDHandler", method = RequestMethod.GET)
+    @ResponseBody
+    public void testIDHandler() throws InterruptedException {
+        treeService.testGetId();
+    }
 }
 

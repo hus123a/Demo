@@ -15,4 +15,6 @@ public interface ITreeService {
     public List<Object> addNewTreeModeUsers(CountDownLatch mainLatch, CountDownLatch threadLatch, RollBack rollBack, BlockingDeque<Boolean> resultList, List<MyLinkTreeNode> taskList, ITreeService treeService);
 
     public MyLinkTreeNode selectOne(MyLinkTreeNode node);
+
+    void testGetId();
 }

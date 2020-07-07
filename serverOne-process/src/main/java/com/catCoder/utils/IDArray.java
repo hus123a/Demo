@@ -1,7 +1,7 @@
-package com.catCoder.config;
+package com.catCoder.utils;
 
 
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-@Component
-public class IDArray<Integer>  extends AbstractQueue<Integer> implements BlockingQueue<Integer>, java.io.Serializable {
+@Slf4j
+public abstract class IDArray<Integer>  extends AbstractQueue<Integer> implements BlockingQueue<Integer>, java.io.Serializable {
 
     /** The queued items */
     final Object[] items;
@@ -325,23 +325,41 @@ public class IDArray<Integer>  extends AbstractQueue<Integer> implements Blockin
             lock.unlock();
         }
     }
+
+
+    /**
+     * 针对此方法做增强
+     */
     @Override
     public Integer poll(long timeout, TimeUnit unit) throws InterruptedException {
         long nanos = unit.toNanos(timeout);
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
+            boolean flag = true;
             while (count == 0) {
+                if(flag) {
+                    //执行一次取数据扩容
+                    addNode();
+                    flag = false;
+                }
+
                 if (nanos <= 0){
+                    log.warn("线程"+Thread.currentThread().getName()+"获取id超时");
                     return null;
                 }
                 nanos = notEmpty.awaitNanos(nanos);
             }
+
+
             return dequeue();
         } finally {
             lock.unlock();
         }
     }
+
+    public abstract void addNode();
+
     @Override
     public Integer peek() {
         final ReentrantLock lock = this.lock;
@@ -755,9 +773,9 @@ public class IDArray<Integer>  extends AbstractQueue<Integer> implements Blockin
          * Node in a linked list of weak iterator references.
          */
         private class Node extends WeakReference<Itr> {
-            Itrs.Node next;
+            Node next;
 
-            Node(Itr iterator, Itrs.Node next) {
+            Node(Itr iterator, Node next) {
                 super(iterator);
                 this.next = next;
             }
@@ -767,10 +785,10 @@ public class IDArray<Integer>  extends AbstractQueue<Integer> implements Blockin
         int cycles = 0;
 
         /** Linked list of weak iterator references */
-        private Itrs.Node head;
+        private Node head;
 
         /** Used to expunge stale iterators */
-        private Itrs.Node sweeper = null;
+        private Node sweeper = null;
 
         private static final int SHORT_SWEEP_PROBES = 4;
         private static final int LONG_SWEEP_PROBES = 16;
@@ -789,8 +807,8 @@ public class IDArray<Integer>  extends AbstractQueue<Integer> implements Blockin
          */
         void doSomeSweeping(boolean tryHarder) {
             int probes = tryHarder ? LONG_SWEEP_PROBES : SHORT_SWEEP_PROBES;
-            Itrs.Node o, p;
-            final Itrs.Node sweeper = this.sweeper;
+            Node o, p;
+            final Node sweeper = this.sweeper;
             boolean passedGo;   // to limit search to one full sweep
 
             if (sweeper == null) {
@@ -812,7 +830,7 @@ public class IDArray<Integer>  extends AbstractQueue<Integer> implements Blockin
                     passedGo = true;
                 }
                 final Itr it = p.get();
-                final Itrs.Node next = p.next;
+                final Node next = p.next;
                 if (it == null || it.isDetached()) {
                     // found a discarded/exhausted iterator
                     probes = LONG_SWEEP_PROBES; // "try harder"
@@ -842,7 +860,7 @@ public class IDArray<Integer>  extends AbstractQueue<Integer> implements Blockin
          * Adds a new iterator to the linked list of tracked iterators.
          */
         void register(Itr itr) {
-            head = new Itrs.Node(itr, head);
+            head = new Node(itr, head);
         }
 
         /**
@@ -853,9 +871,9 @@ public class IDArray<Integer>  extends AbstractQueue<Integer> implements Blockin
         void takeIndexWrapped() {
             // assert lock.getHoldCount() == 1;
             cycles++;
-            for (Itrs.Node o = null, p = head; p != null;) {
+            for (Node o = null, p = head; p != null;) {
                 final Itr it = p.get();
-                final Itrs.Node next = p.next;
+                final Node next = p.next;
                 if (it == null || it.takeIndexWrapped()) {
                     p.clear();
                     p.next = null;
@@ -880,9 +898,9 @@ public class IDArray<Integer>  extends AbstractQueue<Integer> implements Blockin
          * Notifies all iterators, and expunges any that are now stale.
          */
         void removedAt(int removedIndex) {
-            for (Itrs.Node o = null, p = head; p != null;) {
+            for (Node o = null, p = head; p != null;) {
                 final Itr it = p.get();
-                final Itrs.Node next = p.next;
+                final Node next = p.next;
                 if (it == null || it.removedAt(removedIndex)) {
 
                     p.clear();
@@ -912,7 +930,7 @@ public class IDArray<Integer>  extends AbstractQueue<Integer> implements Blockin
          */
         void queueIsEmpty() {
             // assert lock.getHoldCount() == 1;
-            for (Itrs.Node p = head; p != null; p = p.next) {
+            for (Node p = head; p != null; p = p.next) {
                 Itr it = p.get();
                 if (it != null) {
                     p.clear();
