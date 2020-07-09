@@ -1,6 +1,7 @@
 package com.catCoder;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -24,7 +25,10 @@ public class DynamicDattaSourceAspect {
     public void changeDataSource(JoinPoint joinPoint, TargetDataSource targetDataSource) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String dbId = request.getHeader("dbId");
-
+        if(StringUtils.isEmpty(dbId)){
+            log.info("数据源不切换");
+            return;
+        }
         if (!DynamicDataSourceContextHolder.isContainsDataSource(dbId)) {
             //joinPoint.getSignature() ：获取连接点的方法签名对象
             log.error("数据源 " + dbId + " 不存在");
@@ -38,6 +42,10 @@ public class DynamicDattaSourceAspect {
     public void clearDataSource(JoinPoint joinPoint, TargetDataSource targetDataSource) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String dbId = request.getHeader("dbId");
+        if(StringUtils.isEmpty(dbId)){
+            log.info("默认数据源不清理");
+            return;
+        }
         log.debug("清除数据源 " + dbId + " !");
         DynamicDataSourceContextHolder.clearDataSourceType();
     }
