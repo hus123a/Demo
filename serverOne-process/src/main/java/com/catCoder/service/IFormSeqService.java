@@ -38,4 +38,6 @@ public interface IFormSeqService {
      * @date 2020/7/2 15:14
      */
     public Queue<Integer> getMultiIdQuene(FormSeq formSeq,int offset);
+
+    int getValue(String code);
 }

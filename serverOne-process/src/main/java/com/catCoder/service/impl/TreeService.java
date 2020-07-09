@@ -46,7 +46,7 @@ public class TreeService implements ITreeService {
         return treeNodeMapper.addTree(node);
     }
     
-    private static final int THREAD_NUM = 4999;
+    private static final int THREAD_NUM = 1999;
 
 
 
@@ -176,9 +176,10 @@ public class TreeService implements ITreeService {
                 // 线程等待
                 startLatch.await();
                 //int i = idHandler.get();
-                int i = idHandler.get(1000, code);
+                Integer i = idHandler.get(500, code);
                 long endTime = System.currentTimeMillis();
-                //log.info("线程"+Thread.currentThread().getName()+"获取了id :"+ i+ ", cost: " + (endTime - System.currentTimeMillis()) + " ms.");
+                log.info("线程"+Thread.currentThread().getName()+"获取了id :"+ i+ ", cost: " + (endTime - System.currentTimeMillis()) + " ms.");
+
                 if(ids.contains(i)){
                     log.info("存在获取重复的id:"+ i+",当前线程为"+ Thread.currentThread().getName());
                 }

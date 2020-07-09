@@ -2,6 +2,7 @@ package com.catCoder.service.impl;
 
 
 
+import com.catCoder.TargetDataSource;
 import com.catCoder.bean.FormSeq;
 import com.catCoder.mapper.FormSeqMapper;
 import com.catCoder.service.IFormSeqService;
@@ -76,5 +77,13 @@ public class FormSeqServiceImpl implements IFormSeqService {
             ids.add(i);
         }
         return ids;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @TargetDataSource()
+    public int getValue(String code) {
+
+        return formSeqMapper.findValueByCode(new FormSeq(code)).getSeqValue();
     }
 }

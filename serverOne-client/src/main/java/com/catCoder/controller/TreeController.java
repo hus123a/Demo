@@ -1,6 +1,7 @@
 package com.catCoder.controller;
 
 import com.catCoder.bean.MyLinkTreeNode;
+import com.catCoder.service.IFormSeqService;
 import com.catCoder.service.ITreeService;
 import com.catCoder.utils.RedisLock;
 import org.slf4j.Logger;
@@ -30,6 +31,8 @@ public class TreeController {
     private ITreeService treeService;
     @Autowired
     private JedisPool jedisPool;
+    @Autowired
+    private IFormSeqService formSeqServiceImpl;
 
     @RequestMapping(value = "/getTree", method = RequestMethod.GET)
     @ResponseBody
@@ -69,6 +72,12 @@ public class TreeController {
     @ResponseBody
     public void testIDHandler(@RequestParam  String code){
         treeService.testGetId(code);
+    }
+
+    @RequestMapping(value = "/datasourceRoute", method = RequestMethod.GET)
+    @ResponseBody
+    public int datasourceRoute(){
+        return formSeqServiceImpl.getValue("test");
     }
 }
 

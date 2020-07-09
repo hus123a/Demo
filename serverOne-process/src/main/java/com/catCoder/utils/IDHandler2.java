@@ -33,30 +33,27 @@ public class IDHandler2 {
 
    private ConcurrentHashMap<String, ArrayBlockingQueue<Integer>> idMaps = new ConcurrentHashMap<>();
 
+   private int limitSize = 100;
+
    public Integer get(long timeout, String code) throws InterruptedException {
        Integer id = null;
        lock.lockInterruptibly();
-       long start = System.currentTimeMillis();
-       boolean flag = true;
        try {
+           long start = System.currentTimeMillis();
+           boolean flag = true;
             ArrayBlockingQueue<Integer> temp = this.idMaps.get(code);
            if(temp == null){
-               log.info("初始化"+code+"的id容器");
                temp = new  ArrayBlockingQueue<>(500);
                idMaps.put(code,temp);
-           }else {
-               log.info("已经存在"+code+"容器，直接获取");
            }
-
            while ((id = temp.poll()) == null) {
                if (System.currentTimeMillis() - start >= timeout){
+                   log.warn("线程"+Thread.currentThread().getName()+"获取id超时");
                    return null;
                }
                if(flag){
                    flag = false;
-                   new Thread(()->{
-                       addNode(code);
-                   }).start();
+                   addNode(code);
                }
            }
            return id;
@@ -66,8 +63,14 @@ public class IDHandler2 {
    }
 
     public void addNode(String code) {
-        log.info("线程"+Thread.currentThread().getName()+"触发了扩容");
+
+        long l = System.currentTimeMillis();
         Queue<Integer> idQuene = formSeqServiceImpl.getMultiIdQuene(new FormSeq(code), 500);
+        try{
+            log.info("线程"+Thread.currentThread().getName()+"触发了扩容,cost："+(System.currentTimeMillis() - l)+ "ms");
+        }catch (Exception e){
+            log.warn("sql执行异常, 线程"+Thread.currentThread().getName()+"扩容失败！");
+        }
         ArrayBlockingQueue<Integer> codes = idMaps.get(code);
         idQuene.forEach(id->{
             try {
