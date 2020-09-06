@@ -4,16 +4,19 @@ import com.catCoder.bean.MyLinkTreeNode;
 import com.catCoder.service.IFormSeqService;
 import com.catCoder.service.ITreeService;
 import com.catCoder.utils.RedisLock;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import redis.clients.jedis.JedisPool;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -78,6 +81,14 @@ public class TreeController {
     @ResponseBody
     public int datasourceRoute(){
         return formSeqServiceImpl.getValue("test");
+    }
+    @RequestMapping(value = "/createOOM", method = RequestMethod.GET)
+    public void createOOM(){
+        List<MyLinkTreeNode> list = Lists.newArrayList();
+
+        for (;;){
+            list.add(new MyLinkTreeNode());
+        }
     }
 }
 
